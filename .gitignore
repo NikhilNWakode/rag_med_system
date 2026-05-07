@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+data/qdrant/
+backend/data/
+*.db
+*.lock
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+node_modules/
+.next/
+.DS_Store
+*.log
