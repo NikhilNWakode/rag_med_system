@@ -4,6 +4,7 @@ from qdrant_client.models import (
     Distance,
     FieldCondition,
     Filter,
+    PayloadSchemaType,
     PointStruct,
     Range,
     VectorParams,
@@ -46,6 +47,18 @@ class VectorStore:
                 ),
             )
             logger.info(f"Created collection: {self.collection_name}")
+        self._ensure_year_index()
+
+    def _ensure_year_index(self):
+        try:
+            self.client.create_payload_index(
+                collection_name=self.collection_name,
+                field_name="year",
+                field_schema=PayloadSchemaType.INTEGER,
+            )
+            logger.info("Created year payload index")
+        except Exception:
+            pass  # Index already exists
 
     def upsert_chunks(
         self, chunks: list[dict], embeddings: list[list[float]]
