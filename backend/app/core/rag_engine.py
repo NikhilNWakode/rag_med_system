@@ -1,5 +1,6 @@
 import logging
 import uuid
+from app.config import get_settings
 from app.core.llm import LLMClient
 from app.ingestion.pubmed_fetcher import PubMedFetcher
 from app.ingestion.processor import DocumentProcessor
@@ -72,7 +73,7 @@ class RAGEngine:
                 "sources": [],
             }
 
-        top_docs = self.reranker.rerank(query, candidates, top_k)
+        top_docs = self._rerank_or_truncate(query, candidates, top_k)
         answer = self.llm.generate(query, top_docs)
         sources = self._format_sources(top_docs)
 
@@ -91,7 +92,7 @@ class RAGEngine:
         history = history or []
 
         candidates = self.retriever.retrieve(query)
-        top_docs = self.reranker.rerank(query, candidates, top_k)
+        top_docs = self._rerank_or_truncate(query, candidates, top_k)
 
         if not top_docs:
             answer = "No relevant documents found. Please ingest some papers first."
@@ -104,6 +105,15 @@ class RAGEngine:
             "sources": sources,
             "conversation_id": conversation_id,
         }
+
+    def _rerank_or_truncate(
+        self, query: str, candidates: list[dict], top_k: int
+    ) -> list[dict]:
+        settings = get_settings()
+        if settings.use_groq:
+            # Cloud mode: skip reranker to save memory, use RRF-ranked results
+            return candidates[:top_k]
+        return self.reranker.rerank(query, candidates, top_k)
 
     def _format_sources(self, documents: list[dict]) -> list[dict]:
         sources = []
