@@ -47,13 +47,27 @@ app.include_router(ingest.router, prefix="/api", tags=["Ingest"])
 app.include_router(export.router, prefix="/api", tags=["Export"])
 
 
-@app.get("/api/health", response_model=HealthResponse, tags=["Health"])
+@app.get("/api/health")
 async def health_check():
-    llm = LLMClient()
-    vs = VectorStore()
-    return HealthResponse(
-        status="ok",
-        ollama_connected=llm.is_available(),
-        vector_store_ready=True,
-        documents_count=vs.count(),
-    )
+    """Lightweight health check for Railway deploy. Always returns 200."""
+    return {"status": "ok"}
+
+
+@app.get("/api/health/detail", response_model=HealthResponse, tags=["Health"])
+async def health_check_detail():
+    try:
+        llm = LLMClient()
+        vs = VectorStore()
+        return HealthResponse(
+            status="ok",
+            ollama_connected=llm.is_available(),
+            vector_store_ready=True,
+            documents_count=vs.count(),
+        )
+    except Exception:
+        return HealthResponse(
+            status="ok",
+            ollama_connected=False,
+            vector_store_ready=False,
+            documents_count=0,
+        )
