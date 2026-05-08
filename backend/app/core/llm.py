@@ -55,7 +55,11 @@ class LLMClient:
         from groq import Groq
 
         try:
-            client = Groq(api_key=self.settings.groq_api_key)
+            client = Groq(
+                api_key=self.settings.groq_api_key,
+                timeout=60.0,
+                max_retries=3,
+            )
             response = client.chat.completions.create(
                 model=self.settings.groq_model,
                 messages=messages,

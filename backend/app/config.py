@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     # LLM — Groq (cloud, free tier)
     groq_api_key: str = ""
-    groq_model: str = "llama-3.1-70b-versatile"
+    groq_model: str = "llama-3.3-70b-versatile"
 
     # Embeddings
     embedding_model: str = "BAAI/bge-small-en-v1.5"
