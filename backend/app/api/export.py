@@ -51,7 +51,7 @@ async def export_conversation_pdf(conversation_id: str):
             for src in msg["sources"]:
                 title = src.get("title", "Unknown")[:80]
                 pmid = src.get("pmid", "")
-                line = f"  [{src.get('source_number', '')}] {title} (PMID: {pmid})"
+                line = f"[{src.get('source_number', '')}] {title} (PMID: {pmid})"
                 pdf.multi_cell(0, 4, line.encode("latin-1", "replace").decode("latin-1"))
             pdf.ln(3)
 
