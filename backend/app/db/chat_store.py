@@ -1,3 +1,4 @@
+import os
 import aiosqlite
 import json
 import uuid
@@ -7,6 +8,7 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 DB_PATH = "./data/chat_history.db"
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 
 async def init_db():
