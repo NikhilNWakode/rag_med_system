@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(dir c:\\\\Users\\\\HP\\\\Desktop\\\\rag_med_system\\\\frontend /B)"
-    ]
-  }
-}
